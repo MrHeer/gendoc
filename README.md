@@ -15,21 +15,21 @@ $python gendoc --data=input.json --templateDir=./templatetpl --outputDir=./outpu
     {
         "templateFile": "Student.docx",
         "id": [
-            "fileName", // it's necessary
+            "fileName",
             "name",
             "age",
-            ...
+            "..."
         ],
         "value": [
             [
                 "StudentAiden.docx",
                 "Aiden",
                 "12",
-                ...
-            ],
-            ...
+                "..."
+            ]
         ]
-    },
-    ...
+    }
 ]
 ```
+
+> Note: the `fileName` is necessary.
