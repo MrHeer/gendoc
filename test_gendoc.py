@@ -5,7 +5,7 @@ import gendoc
 class Testgendoc(unittest.TestCase):
 
     def test_gendoc(self):
-        gendoc.gendoc("example.json", "./template", "./output")
+        gendoc.gendoc("./config.json")
 
 
 if __name__ == '__main__':

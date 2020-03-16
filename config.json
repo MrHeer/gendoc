@@ -1,16 +1,3 @@
-# gendoc
-
-Generate docx from csv file through .docx template.
-
-## Usage
-
-```bash
-$python gendoc --config=config.json
-```
-
-### Example of the `config.json` file
-
-```json
 {
     "tasks": [
         {
@@ -25,6 +12,3 @@ $python gendoc --config=config.json
         }
     ]
 }
-```
-
-> Note: the `fileName` field is necessary in the `inputFile`.
