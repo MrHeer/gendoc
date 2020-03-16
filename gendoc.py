@@ -3,16 +3,16 @@ import argparse
 version = "0.0.1"
 
 
-def gendoc(data, template, output):
+def gendoc(data, templateDir, outputDir):
     pass
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Generate docx from data(csv, excel, etc) through .docx template.")
-    parser.add_argument("-d", "--data", help="input data(csv, excel, etc")
-    parser.add_argument("-t", "--template", help="template file(.docx)")
-    parser.add_argument("-o", "--output", help="output file name")
+        description="Generate docx from json file through .docx template.")
+    parser.add_argument("-d", "--data", help="json file")
+    parser.add_argument("-t", "--templateDir", help="template directory")
+    parser.add_argument("-o", "--outputDir", help="output directory")
     parser.add_argument("-v", "--version",
                         help="version info", action="store_true")
     args = parser.parse_args()
@@ -21,8 +21,8 @@ if __name__ == "__main__":
         print(version)
         parser.exit()
 
-    if args.data and args.template and args.output:
-        gendoc(args.data, args.template, args.output)
+    if args.data and args.templateDir and args.outputDir:
+        gendoc(args.data, args.templateDir, args.outputDir)
     else:
         parser.print_help()
         parser.exit()
