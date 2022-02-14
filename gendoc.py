@@ -1,14 +1,14 @@
 import argparse
 import csv
 import json
-import os
 
 from concurrent.futures import ThreadPoolExecutor
 from docxtpl import DocxTemplate
-from os import path
+from os import path, makedirs
 
 
-version = "0.0.1"
+version = "0.0.2"
+encoding = 'utf-8'
 maxThread = 20
 
 
@@ -19,33 +19,27 @@ def genDocument(context, templateFile, outputFile):
     doc.save(outputFile)
 
 
-def loadCsv(csvPath):
-    with open(csvPath, newline='') as csvfile:
-        reader = csv.DictReader(csvfile)
-        data = []
-        for row in reader:
-            data.append(row)
-        return data
-
-
 def checkDir(dir):
     if not path.exists(dir):
         print("Directory not found: " + dir)
-        os.makedirs(dir)
+        makedirs(dir)
         print("Create directory: " + dir)
 
 
-def gendocRunner(inputFile, outputDir, templateFile):
-    checkDir(outputDir)
-    data = loadCsv(inputFile)
-    for row in data:
+def gendocByReader(reader, outputDir, templateFile):
+    for row in reader:
         outputFile = path.join(outputDir, row['fileName'])
-        del row['fileName']
         genDocument(row, templateFile, outputFile)
 
 
+def gendocRunner(inputFile, outputDir, templateFile):
+    with open(inputFile, newline='', encoding=encoding) as csvfile:
+        reader = csv.DictReader(csvfile)
+        gendocByReader(reader, outputDir, templateFile)
+
+
 def loadConfig(configPath):
-    with open(configPath) as f:
+    with open(configPath, encoding=encoding) as f:
         config = json.load(f)
         return config
 
@@ -55,6 +49,7 @@ def runTasks(tasks, executor):
         inputFile = task['inputFile']
         outputDir = task['outputDir']
         templateFile = task['templateFile']
+        checkDir(outputDir)
         executor.submit(gendocRunner, inputFile, outputDir, templateFile)
 
 
