@@ -1,7 +1,7 @@
 import argparse
 import csv
 import json
-import threading
+import os
 
 from concurrent.futures import ThreadPoolExecutor
 from docxtpl import DocxTemplate
@@ -15,35 +15,64 @@ maxThread = 20
 def genDocument(context, templateFile, outputFile):
     doc = DocxTemplate(templateFile)
     doc.render(context)
+    print("Generate document: " + outputFile)
     doc.save(outputFile)
 
 
-def gendocRunner(inputFile, outputDir, templateFile):
-    with open(inputFile, newline='') as csvfile:
+def loadCsv(csvPath):
+    with open(csvPath, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
+        data = []
         for row in reader:
-            outputFile = path.join(outputDir, row['fileName'])
-            del row['fileName']
-            genDocument(row, templateFile, outputFile)
+            data.append(row)
+        return data
 
 
-def gendoc(config, thread):
+def checkDir(dir):
+    if not path.exists(dir):
+        print("Directory not found: " + dir)
+        os.makedirs(dir)
+        print("Create directory: " + dir)
+
+
+def gendocRunner(inputFile, outputDir, templateFile):
+    checkDir(outputDir)
+    data = loadCsv(inputFile)
+    for row in data:
+        outputFile = path.join(outputDir, row['fileName'])
+        del row['fileName']
+        genDocument(row, templateFile, outputFile)
+
+
+def loadConfig(configPath):
+    with open(configPath) as f:
+        config = json.load(f)
+        return config
+
+
+def runTasks(tasks, executor):
+    for task in tasks:
+        inputFile = task['inputFile']
+        outputDir = task['outputDir']
+        templateFile = task['templateFile']
+        executor.submit(gendocRunner, inputFile, outputDir, templateFile)
+
+
+def gendoc(configPath, thread):
     if thread > maxThread:
         thread = maxThread
 
-    executor = ThreadPoolExecutor(thread)
-    with open(config) as f:
-        data = json.load(f)
-        with ThreadPoolExecutor(max_workers=thread) as executor:
-            for task in data['tasks']:
-                executor.submit(gendocRunner, task['inputFile'], task['outputDir'],
-                                task['templateFile'])
+    config = loadConfig(configPath)
+    tasks = config['tasks']
+    with ThreadPoolExecutor(max_workers=thread) as executor:
+        runTasks(tasks, executor)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Generate docx from csv file through .docx template.")
-    parser.add_argument("-c", "--config", help="config file")
+    parser.add_argument(
+        "-c", "--config", default="./config.json", help="config file")
     parser.add_argument("-m", "--maxThread", default=5,
                         help="max number of thread", type=int)
     parser.add_argument("-v", "--version",
