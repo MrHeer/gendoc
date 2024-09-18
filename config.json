@@ -1,14 +1,14 @@
 {
     "tasks": [
         {
-            "inputFile": "./input/student.csv",
-            "outputDir": "./output/",
-            "templateFile": "./template/Student.docx"
+            "input_file": "./input/student.csv",
+            "output_dir": "./output/",
+            "template_file": "./template/Student.docx"
         },
         {
-            "inputFile": "./input/teacher.csv",
-            "outputDir": "./output/",
-            "templateFile": "./template/Teacher.docx"
+            "input_file": "./input/teacher.csv",
+            "output_dir": "./output/",
+            "template_file": "./template/Teacher.docx"
         }
     ]
 }

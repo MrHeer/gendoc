@@ -5,14 +5,14 @@ import gendoc
 class Testgendoc(unittest.TestCase):
 
     def test_gendoc(self):
-        gendoc.gendoc("./config.json", 5)
+        gendoc.gen_doc("./config.json", 5)
 
-    def test_genDocument(self):
-        context = {"name": "Aiden", "age": "12"}
-        templateFile = './template/Student.docx'
-        outputFile = './output/StudentAiden.docx'
-        gendoc.genDocument(context, templateFile, outputFile)
+    def test_gen_document(self):
+        context = {"name": "Aden", "age": "12"}
+        template_file = "./template/Student.docx"
+        output_file = "./output/StudentAden.docx"
+        gendoc.gen_document(context, template_file, output_file)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
